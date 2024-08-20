@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
-const InputHandler = ({ dispatch }) => {
+const useInputHandler = (dispatch) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       const key = e.key.toUpperCase();
@@ -9,6 +9,8 @@ const InputHandler = ({ dispatch }) => {
         dispatch({ type: "ADD_LETTER", payload: key });
       } else if (e.key === "Backspace") {
         dispatch({ type: "DELETE_LETTER" });
+      } else if (e.key === "Enter") {
+        dispatch({ type: "SUBMIT_GUESS" });
       }
     };
 
@@ -18,8 +20,6 @@ const InputHandler = ({ dispatch }) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [dispatch]);
-
-  return null; // 不需要渲染任何内容
 };
 
-export default InputHandler;
+export default useInputHandler;
