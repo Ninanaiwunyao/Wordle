@@ -4,6 +4,7 @@ import InputHandler from "./InputHandler";
 
 const initialState = {
   currentGuess: "",
+  guesses: [],
 };
 
 const wordleReducer = (state, action) => {
@@ -25,7 +26,12 @@ const Game = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <Grid currentGuess={state.currentGuess} />
+      {[...Array(6)].map((_, index) => (
+        <Grid
+          key={index}
+          currentGuess={index === 0 ? state.currentGuess : ""}
+        />
+      ))}
       <InputHandler dispatch={dispatch} />
     </div>
   );
