@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useMemo } from "react";
 
 const useWordSelector = (dispatch) => {
   const words = `aback
@@ -2316,22 +2316,18 @@ youth
 zebra
 zesty
 zonal`;
-  const wordList = words
-    .trim()
-    .split("\n")
-    .map((word) => word.trim().toUpperCase());
+  const wordList = useMemo(() => {
+    return words
+      .trim()
+      .split("\n")
+      .map((word) => word.trim().toUpperCase());
+  }, [words]);
 
-  const getRandomWord = useCallback(() => {
-    const randomIndex = Math.floor(Math.random() * wordList.length);
-    return wordList[randomIndex];
-  }, [wordList]);
   useEffect(() => {
-    console.log("123");
-    const randomWord = getRandomWord();
+    const randomIndex = Math.floor(Math.random() * wordList.length);
+    const randomWord = wordList[randomIndex];
     dispatch({ type: "SET_CORRECT_WORD", payload: randomWord });
-  }, [dispatch]);
-
-  return getRandomWord;
+  }, [dispatch, wordList]);
 };
 
 export default useWordSelector;
