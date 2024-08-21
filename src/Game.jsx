@@ -1,7 +1,7 @@
-import { useState, useReducer } from "react";
+import { useReducer } from "react";
 import Grid from "./Grid";
-import useInputHandler from "./useInputHandler";
-import useWordSelector from "./useWordSelector";
+import useInputHandler from "./hook/useInputHandler";
+import useWordSelector from "./hook/useWordSelector";
 
 //const correctWord = "REACT";
 const initialState = {
@@ -11,10 +11,14 @@ const initialState = {
   isGameOver: false,
   message: "",
   currentRow: 0,
+  correctWord: "",
 };
 
 const wordleReducer = (state, action) => {
   switch (action.type) {
+    case "SET_CORRECT_WORD":
+      return { ...state, correctWord: action.payload };
+
     case "ADD_LETTER":
       if (state.currentGuess.length < 5 && !state.isGameOver) {
         return { ...state, currentGuess: state.currentGuess + action.payload };
@@ -29,7 +33,7 @@ const wordleReducer = (state, action) => {
 
     case "SUBMIT_GUESS":
       if (state.currentGuess.length === 5 && !state.isGameOver) {
-        const guessResult = checkGuess(state.currentGuess, action.correctWord);
+        const guessResult = checkGuess(state.currentGuess, state.correctWord);
         const newGuess = [...state.guesses, state.currentGuess];
         const newResults = [...state.results, guessResult];
         const isCorrect = guessResult.every((result) => result === "green");
@@ -51,7 +55,11 @@ const wordleReducer = (state, action) => {
         };
       }
       return state;
-
+    case "RESET_GAME":
+      return {
+        ...initialState,
+        correctWord: action.payload,
+      };
     default:
       return state;
   }
@@ -80,22 +88,22 @@ const checkGuess = (guess, correctWord) => {
 };
 
 const Game = () => {
-  const [correctWord, setCorrectWord] = useState("");
   const [state, dispatch] = useReducer(wordleReducer, initialState);
 
-  useWordSelector(setCorrectWord);
+  const getRandomWord = useWordSelector(dispatch);
 
-  useInputHandler((action) => {
-    if (action.type === "SUBMIT_GUESS") {
-      dispatch({ type: "SUBMIT_GUESS", correctWord });
-    } else {
-      dispatch(action);
-    }
-  });
+  useInputHandler(dispatch);
+
+  const handleReset = (e) => {
+    e.target.blur();
+    const newWord = getRandomWord();
+    dispatch({ type: "RESET_GAME", payload: newWord });
+    console.clear();
+  };
 
   return (
     <div className="flex flex-col items-center">
-      {correctWord && (
+      {state.correctWord && (
         <>
           {[...Array(6)].map((_, index) => (
             <Grid
@@ -112,6 +120,12 @@ const Game = () => {
           {state.message && (
             <p className="mt-4 text-3xl font-bold">{state.message}</p>
           )}
+          <button
+            className="mt-6 bg-green p-4 rounded text-white font-bold text-xl"
+            onClick={handleReset}
+          >
+            Reset
+          </button>
         </>
       )}
     </div>

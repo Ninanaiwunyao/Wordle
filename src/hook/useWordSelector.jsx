@@ -1,9 +1,7 @@
-import { useEffect } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useCallback } from "react";
 
-const useWordSelector = (setCorrectWord) => {
-  useEffect(() => {
-    const words = `aback
+const useWordSelector = (dispatch) => {
+  const words = `aback
 abase
 abate
 abbey
@@ -2318,23 +2316,22 @@ youth
 zebra
 zesty
 zonal`;
-    const wordList = words
-      .trim()
-      .split("\n")
-      .map((word) => word.trim().toUpperCase());
+  const wordList = words
+    .trim()
+    .split("\n")
+    .map((word) => word.trim().toUpperCase());
 
-    const getRandomWord = () => {
-      const randomIndex = Math.floor(Math.random() * wordList.length);
-      return wordList[randomIndex];
-    };
-
+  const getRandomWord = useCallback(() => {
+    const randomIndex = Math.floor(Math.random() * wordList.length);
+    return wordList[randomIndex];
+  }, [wordList]);
+  useEffect(() => {
+    console.log("123");
     const randomWord = getRandomWord();
-    setCorrectWord(randomWord);
-  }, [setCorrectWord]);
-};
+    dispatch({ type: "SET_CORRECT_WORD", payload: randomWord });
+  }, [dispatch]);
 
-useWordSelector.propTypes = {
-  setCorrectWord: PropTypes.func.isRequired,
+  return getRandomWord;
 };
 
 export default useWordSelector;

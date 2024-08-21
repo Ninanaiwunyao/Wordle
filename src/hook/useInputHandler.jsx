@@ -10,6 +10,7 @@ const useInputHandler = (dispatch) => {
       } else if (e.key === "Backspace") {
         dispatch({ type: "DELETE_LETTER" });
       } else if (e.key === "Enter") {
+        e.preventDefault();
         dispatch({ type: "SUBMIT_GUESS" });
       }
     };
