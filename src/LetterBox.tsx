@@ -1,5 +1,4 @@
-import PropTypes from "prop-types";
-
+import React from "react";
 const LetterBox = ({ letter, color }) => {
   const bgColor = color
     ? color === "green"
@@ -18,11 +17,6 @@ const LetterBox = ({ letter, color }) => {
       {letter}
     </div>
   );
-};
-
-LetterBox.propTypes = {
-  letter: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
 };
 
 export default LetterBox;

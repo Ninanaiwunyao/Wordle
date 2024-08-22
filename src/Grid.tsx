@@ -1,3 +1,4 @@
+import React from "react";
 import LetterBox from "./LetterBox.jsx";
 import PropTypes from "prop-types";
 
@@ -13,10 +14,6 @@ const Grid = ({ currentGuess, result = [] }) => {
       ))}
     </div>
   );
-};
-Grid.propTypes = {
-  currentGuess: PropTypes.string,
-  result: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default Grid;

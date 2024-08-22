@@ -1,10 +1,28 @@
-import { useReducer } from "react";
+import React, { useReducer } from "react";
 import Grid from "./Grid";
 import useInputHandler from "./hook/useInputHandler";
 import useWordSelector from "./hook/useWordSelector";
 
+interface GameState {
+  currentGuess: string;
+  guesses: string[];
+  results: string[][];
+  isGameOver: boolean;
+  message: string;
+  currentRow: number;
+  correctWord: string;
+  gameId: number;
+}
+
+type GameAction =
+  | { type: "SET_CORRECT_WORD"; payload: string }
+  | { type: "ADD_LETTER"; payload: string }
+  | { type: "DELETE_LETTER" }
+  | { type: "SUBMIT_GUESS" }
+  | { type: "RESET_GAME" };
+
 //const correctWord = "REACT";
-const initialState = {
+const initialState: GameState = {
   currentGuess: "",
   guesses: [],
   results: [],
@@ -15,7 +33,7 @@ const initialState = {
   gameId: 0,
 };
 
-const wordleReducer = (state, action) => {
+const wordleReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case "SET_CORRECT_WORD":
       return { ...state, correctWord: action.payload };
@@ -34,9 +52,12 @@ const wordleReducer = (state, action) => {
 
     case "SUBMIT_GUESS":
       if (state.currentGuess.length === 5 && !state.isGameOver) {
-        const guessResult = checkGuess(state.currentGuess, state.correctWord);
+        const guessResult: string[] = checkGuess(
+          state.currentGuess,
+          state.correctWord
+        );
         const newGuess = [...state.guesses, state.currentGuess];
-        const newResults = [...state.results, guessResult];
+        const newResults: string[][] = [...state.results, guessResult];
         const isCorrect = guessResult.every((result) => result === "green");
         const isGameOver = isCorrect || newGuess.length >= 6;
         const message = isCorrect
@@ -67,9 +88,9 @@ const wordleReducer = (state, action) => {
   }
 };
 
-const checkGuess = (guess, correctWord) => {
-  const result = Array(5).fill("grey");
-  const correctWordArray = correctWord.split("");
+const checkGuess = (guess: string, correctWord: string): string[] => {
+  const result: string[] = Array(5).fill("grey") as string[];
+  const correctWordArray: (string | null)[] = correctWord.split("");
 
   guess.split("").forEach((letter, index) => {
     if (letter === correctWord[index]) {
@@ -84,7 +105,6 @@ const checkGuess = (guess, correctWord) => {
       correctWordArray[correctWordArray.indexOf(letter)] = null;
     }
   });
-  console.log(correctWord);
 
   return result;
 };
@@ -96,8 +116,8 @@ const Game = () => {
 
   useInputHandler(dispatch);
 
-  const handleReset = (e) => {
-    e.target.blur();
+  const handleReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.blur();
     dispatch({ type: "RESET_GAME" });
     console.clear();
   };
@@ -106,7 +126,7 @@ const Game = () => {
     <div className="flex flex-col items-center">
       {state.correctWord && (
         <>
-          {[...Array(6)].map((_, index) => (
+          {Array.from({ length: 6 }, (_, index) => (
             <Grid
               key={index}
               currentGuess={

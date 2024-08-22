@@ -1,4 +1,4 @@
-import { db } from "./firebase.js";
+import { db } from "./firebase.ts";
 import { collection, addDoc } from "firebase/firestore";
 
 const wordList = `aback
