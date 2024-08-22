@@ -12,6 +12,7 @@ const initialState = {
   message: "",
   currentRow: 0,
   correctWord: "",
+  gameId: 0,
 };
 
 const wordleReducer = (state, action) => {
@@ -58,7 +59,8 @@ const wordleReducer = (state, action) => {
     case "RESET_GAME":
       return {
         ...initialState,
-        correctWord: action.payload,
+        correctWord: state.correctWord,
+        gameId: state.gameId + 1,
       };
     default:
       return state;
@@ -90,14 +92,13 @@ const checkGuess = (guess, correctWord) => {
 const Game = () => {
   const [state, dispatch] = useReducer(wordleReducer, initialState);
 
-  const getRandomWord = useWordSelector(dispatch);
+  useWordSelector(dispatch, state.gameId);
 
   useInputHandler(dispatch);
 
   const handleReset = (e) => {
     e.target.blur();
-    const newWord = getRandomWord();
-    dispatch({ type: "RESET_GAME", payload: newWord });
+    dispatch({ type: "RESET_GAME" });
     console.clear();
   };
 

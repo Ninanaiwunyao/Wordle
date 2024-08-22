@@ -7,8 +7,8 @@ const Grid = ({ currentGuess, result = [] }) => {
       {[...Array(5)].map((_, i) => (
         <LetterBox
           key={i}
-          letter={currentGuess[i] || ""}
-          color={result[i] || ""}
+          letter={currentGuess[i]}
+          color={result[i]} //空的跟undefined在這邊意義一樣
         />
       ))}
     </div>
